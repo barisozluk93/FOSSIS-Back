@@ -1,0 +1,6 @@
+@MenuManagement_HostAddress = http://localhost:5062
+
+GET {{MenuManagement_HostAddress}}/Menu/
+Accept: application/json
+
+###
