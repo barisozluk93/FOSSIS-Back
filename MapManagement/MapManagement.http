@@ -1,0 +1,6 @@
+@MapManagementService_HostAddress = http://localhost:5080
+
+GET {{MapManagementService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

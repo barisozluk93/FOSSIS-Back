@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using UserManagement.Entity;
 
 namespace NotificationManagement.Entity
 {
