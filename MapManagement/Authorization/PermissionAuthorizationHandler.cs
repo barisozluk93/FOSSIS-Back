@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MapManagement.Model;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
-using NotificationManagement.Model;
 using System.Net.Http.Headers;
 
-namespace NotificationManagement.Authorization
+namespace MapManagement.Authorization
 {
     public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
     {

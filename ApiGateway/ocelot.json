@@ -83,8 +83,19 @@
       ],
       "UpstreamPathTemplate": "/api/Menu/{everything}",
       "UpstreamHttpMethod": [ "Post", "Options", "Get", "Put", "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Map/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/Map/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Options", "Get", "Put", "Delete" ]
     }
-
   ],
   "GlobalConfiguration": {
     "BaseUrl": "http://localhost:5055"
