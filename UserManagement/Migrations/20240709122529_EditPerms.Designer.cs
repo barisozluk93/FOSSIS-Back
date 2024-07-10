@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserManagement.DbContexts;
@@ -11,9 +12,11 @@ using UserManagement.DbContexts;
 namespace UserManagement.Migrations
 {
     [DbContext(typeof(UserManagementContext))]
-    partial class UserManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20240709122529_EditPerms")]
+    partial class EditPerms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,7 +371,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 31L,
-                            Code = "BatteryScene.Paging.Permission",
+                            Code = "BateryScene.Paging.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Listeleme Yetkisi"
@@ -376,7 +379,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 32L,
-                            Code = "BatteryScene.Save.Permission",
+                            Code = "BateryScene.Save.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Kayıt Yetkisi"
@@ -384,7 +387,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 33L,
-                            Code = "BatteryScene.Edit.Permission",
+                            Code = "BateryScene.Edit.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Güncelleme Yetkisi"
@@ -392,7 +395,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 34L,
-                            Code = "BatteryScene.Delete.Permission",
+                            Code = "BateryScene.Delete.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Silme Yetkisi"

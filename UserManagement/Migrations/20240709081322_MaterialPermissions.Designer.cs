@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserManagement.DbContexts;
@@ -11,9 +12,11 @@ using UserManagement.DbContexts;
 namespace UserManagement.Migrations
 {
     [DbContext(typeof(UserManagementContext))]
-    partial class UserManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20240709081322_MaterialPermissions")]
+    partial class MaterialPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -304,7 +307,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 23L,
-                            Code = "InverterScene.Paging.Permission",
+                            Code = "InverterScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "İnverter Ekranı Listeleme Yetkisi"
@@ -336,7 +339,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 27L,
-                            Code = "PanelScene.Paging.Permission",
+                            Code = "PanelScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Panel Ekranı Listeleme Yetkisi"
@@ -368,7 +371,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 31L,
-                            Code = "BatteryScene.Paging.Permission",
+                            Code = "BateryScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Listeleme Yetkisi"
@@ -376,7 +379,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 32L,
-                            Code = "BatteryScene.Save.Permission",
+                            Code = "BateryScene.Save.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Kayıt Yetkisi"
@@ -384,7 +387,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 33L,
-                            Code = "BatteryScene.Edit.Permission",
+                            Code = "BateryScene.Edit.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Güncelleme Yetkisi"
@@ -392,7 +395,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 34L,
-                            Code = "BatteryScene.Delete.Permission",
+                            Code = "BateryScene.Delete.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Batarya Ekranı Silme Yetkisi"
@@ -400,7 +403,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 35L,
-                            Code = "HeatPumpScene.Paging.Permission",
+                            Code = "HeatPumpScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Isı Pompası Ekranı Listeleme Yetkisi"
@@ -432,7 +435,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 39L,
-                            Code = "ConstructionScene.Paging.Permission",
+                            Code = "ConstructionScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Konstrüksiyon Ekranı Listeleme Yetkisi"
@@ -464,7 +467,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 43L,
-                            Code = "CableScene.Paging.Permission",
+                            Code = "CableScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Kablo Ekranı Listeleme Yetkisi"
@@ -496,7 +499,7 @@ namespace UserManagement.Migrations
                         new
                         {
                             Id = 47L,
-                            Code = "ChargingStationScene.Paging.Permission",
+                            Code = "ChargingStationScene.List.Permission",
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Elektrikli Şarj İstasyonu Ekranı Listeleme Yetkisi"
