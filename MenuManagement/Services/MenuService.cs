@@ -19,12 +19,13 @@ namespace MenuManagement.Services
         public async Task<Result<PagingResult<PagedList<Menu>>>> Paginate(PagingParameter pagingParameter)
         {
             var result = new Result<PagingResult<PagedList<Menu>>>();
+            string lowerFilterText = string.IsNullOrEmpty(pagingParameter.FilterText) ? null : pagingParameter.FilterText.ToLower();
 
             using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {
-                    var queryable = _dbContext.Menu.Include(x => x.Parent);
+                    var queryable = _dbContext.Menu.Where(x=> (String.IsNullOrEmpty(lowerFilterText) || (x.Name.ToLower().Contains(lowerFilterText)))).Include(x => x.Parent);
                     var pagination = PagedList<Menu>.ToPagedList(queryable, pagingParameter.PageNumber, pagingParameter.PageSize);
 
                     result.SetData(new PagingResult<PagedList<Menu>>()
