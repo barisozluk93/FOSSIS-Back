@@ -1,7 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -191,6 +195,11 @@ namespace UserManagement.Services
                         oldUser.Email = user.Email;
                         oldUser.Phone = user.Phone;
                         oldUser.Username = user.Username;
+                        oldUser.Country = user.Country;
+                        oldUser.City = user.City;
+                        oldUser.District = user.District;
+                        oldUser.Address = user.Address;
+                        oldUser.FileId = user.FileId;
 
                         var roles = await _dbContext.UserRoles.Where(x => x.UserId == user.Id).ToListAsync();
                         _dbContext.UserRoles.RemoveRange(roles);
@@ -307,7 +316,7 @@ namespace UserManagement.Services
             return result;
         }
 
-        public async Task<Result<User>> GetById(long id)
+        public async Task<Result<User>> GetById(long id, string token)
         {
             var result = new Result<User>();
 
@@ -322,6 +331,11 @@ namespace UserManagement.Services
                         user.Salt = null;
                         user.Roles = await _dbContext.UserRoles.Where(x => x.UserId == id && !x.IsDeleted).Select(s => s.RoleId).ToListAsync();
                         user.Organizations = await _dbContext.OrganizationUsers.Where(x => x.UserId == id && !x.IsDeleted).Select(s => s.OrganizationId).ToListAsync();
+
+                        if (user.FileId.HasValue)
+                        {
+                            user.FileResult = await GetFileResult(user.FileId.Value, token);
+                        }
 
                         result.SetData(user);
                         result.SetMessage("İşlem başarı ile gerçekleşti.");
@@ -375,6 +389,43 @@ namespace UserManagement.Services
             return result;
         }
 
+        public async Task<Result<User>> UserAvatarUpdate(long id, long fileId)
+        {
+            var result = new Result<User>();
+
+            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+            {
+                try
+                {
+                    var oldUser = await _dbContext.Users.Where(x => x.Id == id).FirstOrDefaultAsync();
+                    if (oldUser != null)
+                    {
+                        oldUser.FileId = fileId;
+
+                        await _dbContext.SaveChangesAsync();
+                        transaction.Commit();
+
+                        result.SetData(oldUser);
+                        result.SetMessage("İşlem başarı ile gerçekleşti.");
+                    }
+                    else
+                    {
+                        result.SetIsSuccess(false);
+                        result.SetMessage("Böyle bir kayıt bulunmamaktadır.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    result.SetIsSuccess(false);
+                    result.SetMessage(ex.Message);
+                }
+            }
+
+            return result;
+        }
+
         private Task<ClaimsPrincipal?> GetPrincipalFromToken(string? token)
         {
             var tokenValidationParameters = new TokenValidationParameters
@@ -405,6 +456,52 @@ namespace UserManagement.Services
                 hashAlgorithm,
                 keySize);
             return Convert.ToHexString(hash);
+        }
+
+        private async Task<FileContentResult> GetFileResult(long id, string token)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.GetAsync(configuration["AppSettings:ApiUrl"] + "/api/File/" + id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseStr = await response.Content.ReadAsStringAsync();
+
+                if (!string.IsNullOrEmpty(responseStr))
+                {
+                    try
+                    {
+                        Result<Model.File> result = JsonConvert.DeserializeObject<Result<Model.File>>(responseStr);
+
+                        if (result != null)
+                        {
+                            byte[] bytes = System.IO.File.ReadAllBytes(result.GetData().Path);
+                            return new FileContentResult(bytes, result.GetData().ContentType);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return null;
+                    }
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return null;
         }
 
     }

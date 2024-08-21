@@ -4,6 +4,8 @@
     {
         public long Id { get; set; }
 
+        public string CurrentPassword { get; set; }
+
         public string Password { get; set; }
     }
 }

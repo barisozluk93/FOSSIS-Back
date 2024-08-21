@@ -15,7 +15,7 @@ namespace MapManagementService.Controllers
         [HttpGet("GetBuildings")]
         public async Task<JsonResult> GetBuildings()
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "Buildings\\Beyoglu.json");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Buildings\\beyoglu.json");
             using StreamReader reader = new(path);
             return new JsonResult(reader.ReadToEnd());
         }

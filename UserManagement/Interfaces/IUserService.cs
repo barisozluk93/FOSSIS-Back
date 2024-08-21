@@ -11,8 +11,8 @@ namespace UserManagement.Interfaces
         Task<Result<User>> Save(User user);
         Task<Result<User>> Update(User user);
         Task<Result<User>> Delete(long id);
-        Task<Result<User>> GetById(long id);
-
+        Task<Result<User>> GetById(long id, string token);
+        Task<Result<User>> UserAvatarUpdate(long id, long fileId);
         Task<Result<List<String>>> GetUserPermissions(string token);
 
     }

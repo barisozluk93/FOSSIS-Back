@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Transactions;
 using NotificationManagement.Entity;
 using NotificationManagement.Interfaces;
-using NotificationManagement.Model;
 using Microsoft.AspNetCore.Authorization;
-using NotificationManagement.Authorization;
 
 namespace NotificationManagement.Controllers
 {
@@ -19,11 +16,11 @@ namespace NotificationManagement.Controllers
             _notificationService = notificationService;
         }
 
-        [HttpGet("All")]
+        [HttpGet("All/{userId}")]
         [Authorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(long userId)
         {
-            var result = await _notificationService.GetNotifications();
+            var result = await _notificationService.GetNotifications(userId);
             return new OkObjectResult(result);
         }
 
@@ -32,14 +29,6 @@ namespace NotificationManagement.Controllers
         public async Task<IActionResult> Save([FromBody] Notification notification)
         {
             var result = await _notificationService.Save(notification);
-            return new OkObjectResult(result);
-        }
-
-        [HttpPost("Update")]
-        [Authorize]
-        public async Task<IActionResult> Update([FromBody] Notification notification)
-        {
-            var result = await _notificationService.Update(notification);
             return new OkObjectResult(result);
         }
 

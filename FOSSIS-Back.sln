@@ -5,15 +5,17 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagement", "UserManagement\UserManagement.csproj", "{67A37D55-E930-4ACA-BF6F-5711AE181C97}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MenuManagement", "MenuManagement\MenuManagement.csproj", "{E8BE539D-0EA6-4C30-8A58-70EAB59300AA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\ApiGateway.csproj", "{056D31DA-F95D-45DC-9F4C-616220DE9E62}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationManagement", "NotificationManagement\NotificationManagement.csproj", "{3B43FC53-AC60-4DAD-A86C-39BDEDEDABF9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileManagement", "FileManagement\FileManagement.csproj", "{3D72C457-652A-4D19-9B85-E700EB8520E2}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapManagement", "MapManagement\MapManagement.csproj", "{0BD001CD-BDB9-4B32-88FF-114D4C7FB5AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterialManagement", "MaterialManagement\MaterialManagement.csproj", "{7D513119-9AE3-4C0E-8856-CC6D00AE4ED9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaterialManagement", "MaterialManagement\MaterialManagement.csproj", "{7D513119-9AE3-4C0E-8856-CC6D00AE4ED9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectManagement", "ProjectManagement\ProjectManagement.csproj", "{F19C551B-65A6-45A5-8F83-3AB7DFAA0637}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +27,6 @@ Global
 		{67A37D55-E930-4ACA-BF6F-5711AE181C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67A37D55-E930-4ACA-BF6F-5711AE181C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67A37D55-E930-4ACA-BF6F-5711AE181C97}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8BE539D-0EA6-4C30-8A58-70EAB59300AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8BE539D-0EA6-4C30-8A58-70EAB59300AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8BE539D-0EA6-4C30-8A58-70EAB59300AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8BE539D-0EA6-4C30-8A58-70EAB59300AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{056D31DA-F95D-45DC-9F4C-616220DE9E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{056D31DA-F95D-45DC-9F4C-616220DE9E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{056D31DA-F95D-45DC-9F4C-616220DE9E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,6 +35,10 @@ Global
 		{3B43FC53-AC60-4DAD-A86C-39BDEDEDABF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B43FC53-AC60-4DAD-A86C-39BDEDEDABF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B43FC53-AC60-4DAD-A86C-39BDEDEDABF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D72C457-652A-4D19-9B85-E700EB8520E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D72C457-652A-4D19-9B85-E700EB8520E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D72C457-652A-4D19-9B85-E700EB8520E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D72C457-652A-4D19-9B85-E700EB8520E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0BD001CD-BDB9-4B32-88FF-114D4C7FB5AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0BD001CD-BDB9-4B32-88FF-114D4C7FB5AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BD001CD-BDB9-4B32-88FF-114D4C7FB5AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +47,10 @@ Global
 		{7D513119-9AE3-4C0E-8856-CC6D00AE4ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D513119-9AE3-4C0E-8856-CC6D00AE4ED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D513119-9AE3-4C0E-8856-CC6D00AE4ED9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F19C551B-65A6-45A5-8F83-3AB7DFAA0637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F19C551B-65A6-45A5-8F83-3AB7DFAA0637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F19C551B-65A6-45A5-8F83-3AB7DFAA0637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F19C551B-65A6-45A5-8F83-3AB7DFAA0637}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
