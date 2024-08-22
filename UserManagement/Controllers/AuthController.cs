@@ -55,9 +55,18 @@ namespace UserManagement.Controllers
 
         [HttpPost("ResetPassword")]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequest request)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
             var result = await authService.ResetPassword(request);
+
+            return new OkObjectResult(result);
+        }
+
+        [HttpPost("ChangePassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var result = await authService.ChangePassword(request);
 
             return new OkObjectResult(result);
         }

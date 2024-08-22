@@ -64,6 +64,15 @@ namespace UserManagement.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpPost("UserProfileEdit")]
+        [Authorize]
+
+        public async Task<IActionResult> UserProfileEdit([FromBody] User user)
+        {
+            var result = await _userService.Update(user);
+            return new OkObjectResult(result);
+        }
+
         [HttpDelete("Delete/{id}")]
         [Authorize]
         [HasPermission("UserScene.Delete.Permission")]
@@ -79,7 +88,18 @@ namespace UserManagement.Controllers
 
         public async Task<IActionResult> GetById(long id)
         {
-            var result = await _userService.GetById(id);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(' ').Last();
+
+            var result = await _userService.GetById(id, token);
+            return new OkObjectResult(result);
+        }
+
+        [HttpGet("UserAvatarUpdate/{id}/{fileId}")]
+        [Authorize]
+
+        public async Task<IActionResult> UserAvatarUpdate(long id, long fileId)
+        {
+            var result = await _userService.UserAvatarUpdate(id, fileId);
             return new OkObjectResult(result);
         }
 

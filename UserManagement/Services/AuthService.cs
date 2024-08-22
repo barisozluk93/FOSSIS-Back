@@ -225,7 +225,7 @@ namespace UserManagement.Services
             return result;
         }
 
-        public async Task<Result<bool>> ResetPassword(ChangePasswordRequest request)
+        public async Task<Result<bool>> ResetPassword(ResetPasswordRequest request)
         {
             var result = new Result<bool>();
 
@@ -247,6 +247,56 @@ namespace UserManagement.Services
                         transaction.Commit();
                         result.SetData(true);
                         result.SetIsSuccess(true);
+                    }
+                    else
+                    {
+                        result.SetIsSuccess(false);
+                        result.SetMessage("Böyle bir kullanıcı bulunamadı.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    result.SetIsSuccess(false);
+                    result.SetMessage(ex.Message);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<Result<bool>> ChangePassword(ChangePasswordRequest request)
+        {
+            var result = new Result<bool>();
+
+            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
+            {
+                try
+                {
+                    var user = await _dbContext.Users.Where(x => x.Id == request.Id).FirstOrDefaultAsync();
+
+                    if (user != null)
+                    {
+                        var isSuccess = VerifyPassword(request.CurrentPassword, user.Password, user.Salt);
+                        if (isSuccess)
+                        {
+
+                            var hashedPassword = HashPasword(request.Password, out var salt);
+
+                            user.Password = hashedPassword;
+                            user.Salt = salt;
+
+                            await _dbContext.SaveChangesAsync();
+
+                            transaction.Commit();
+                            result.SetData(true);
+                            result.SetIsSuccess(true);
+                        }
+                        else
+                        {
+                            result.SetIsSuccess(false);
+                            result.SetMessage("Current password is incorrect.");
+                        }
                     }
                     else
                     {

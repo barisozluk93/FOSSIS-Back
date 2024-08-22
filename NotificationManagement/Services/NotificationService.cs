@@ -14,7 +14,7 @@ namespace NotificationManagement.Services
         {
             _dbContext = dbContext;
         }
-        public async Task<Result<List<Notification>>> GetNotifications()
+        public async Task<Result<List<Notification>>> GetNotifications(long userId)
         {
             var result = new Result<List<Notification>>();
 
@@ -22,7 +22,7 @@ namespace NotificationManagement.Services
             {
                 try
                 {
-                    var data = await _dbContext.Notifications.Where(x => !x.IsDeleted && !x.IsReaded).ToListAsync();
+                    var data = await _dbContext.Notifications.Where(x => !x.IsDeleted && x.UserId == userId).OrderByDescending(o => o.Date).ToListAsync();
 
                     result.SetData(data);
                     result.SetMessage("İşlem başarı ile gerçekleşti.");
@@ -46,6 +46,7 @@ namespace NotificationManagement.Services
                 {
                     if (!_dbContext.Notifications.Where(x => (x.Id == notification.Id) && !x.IsDeleted).Any())
                     {
+                        notification.Date = DateTime.UtcNow;
                         _dbContext.Add(notification);
                         await _dbContext.SaveChangesAsync();
                         transaction.Commit();
@@ -57,45 +58,6 @@ namespace NotificationManagement.Services
                     {
                         result.SetIsSuccess(false);
                         result.SetMessage("Aynı Id ile tanımlı bir bildirim bulunmaktadır.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-
-                    result.SetIsSuccess(false);
-                    result.SetMessage(ex.Message);
-                }
-            }
-
-            return result;
-        }
-        public async Task<Result<Notification>> Update(Notification notification)
-        {
-            var result = new Result<Notification>();
-
-            using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
-            {
-                try
-                {
-                    var oldNotification = await _dbContext.Notifications.Where(x => x.Id == notification.Id && !x.IsDeleted).FirstOrDefaultAsync();
-
-                    if (oldNotification != null)
-                    {
-                        oldNotification.Message = notification.Message;
-                        oldNotification.IsReaded = notification.IsReaded;
-
-                        await _dbContext.SaveChangesAsync();
-                        transaction.Commit();
-
-                        result.SetIsSuccess(true);
-                        result.SetData(notification);
-                        result.SetMessage("İşlem başarı ile gerçekleşti.");
-                    }
-                    else
-                    {
-                        result.SetIsSuccess(false);
-                        result.SetMessage("Böyle bir kayıt bulunmamaktadır.");
                     }
                 }
                 catch (Exception ex)

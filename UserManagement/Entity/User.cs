@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UserManagement.Entity
 {
@@ -19,9 +20,18 @@ namespace UserManagement.Entity
         public string Email { get; set; }
 
         public string Phone { get; set; }
+        public string? Country { get; set; }
 
+        public string? City { get; set; }
+
+        public string? District { get; set; }
+
+        public string? Address { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsSystemData { get; set; }
+
+        public long? FileId { get; set; }
+
 
         [NotMapped]
         public List<long> Organizations { get; set; } = new List<long>();
@@ -31,5 +41,8 @@ namespace UserManagement.Entity
 
         [NotMapped]
         public List<Permission> Permissions { get; set; } = new List<Permission>();
+
+        [NotMapped]
+        public FileContentResult? FileResult { get; set; }
     }
 }

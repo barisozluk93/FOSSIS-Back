@@ -524,6 +524,22 @@ namespace UserManagement.Migrations
                             IsDeleted = false,
                             IsSystemData = true,
                             Name = "Elektrikli Şarj İstasyonu Ekranı Silme Yetkisi"
+                        },
+                        new
+                        {
+                            Id = 51L,
+                            Code = "FileScene.Save.Permission",
+                            IsDeleted = false,
+                            IsSystemData = true,
+                            Name = "Dosya Ekranı Kayıt Yetkisi"
+                        },
+                        new
+                        {
+                            Id = 52L,
+                            Code = "FileScene.Delete.Permission",
+                            IsDeleted = false,
+                            IsSystemData = true,
+                            Name = "Dosya Ekranı Silme Yetkisi"
                         });
                 });
 
@@ -955,6 +971,34 @@ namespace UserManagement.Migrations
                             IsDeleted = false,
                             PermissionId = 50L,
                             RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 53L,
+                            IsDeleted = false,
+                            PermissionId = 51L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 54L,
+                            IsDeleted = false,
+                            PermissionId = 52L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 55L,
+                            IsDeleted = false,
+                            PermissionId = 51L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 56L,
+                            IsDeleted = false,
+                            PermissionId = 52L,
+                            RoleId = 2L
                         });
                 });
 
@@ -966,9 +1010,24 @@ namespace UserManagement.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
+
+                    b.Property<string>("District")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<long?>("FileId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -1393,6 +1452,20 @@ namespace UserManagement.Migrations
                             Id = 50L,
                             IsDeleted = false,
                             PermissionId = 50L,
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            Id = 51L,
+                            IsDeleted = false,
+                            PermissionId = 51L,
+                            UserId = 1L
+                        },
+                        new
+                        {
+                            Id = 52L,
+                            IsDeleted = false,
+                            PermissionId = 52L,
                             UserId = 1L
                         });
                 });
