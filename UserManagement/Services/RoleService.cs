@@ -20,12 +20,13 @@ namespace UserManagement.Services
         public async Task<Result<PagingResult<PagedList<Role>>>> Paginate(PagingParameter pagingParameter)
         {
             var result = new Result<PagingResult<PagedList<Role>>>();
+            string lowerFilterText = string.IsNullOrEmpty(pagingParameter.FilterText) ? null : pagingParameter.FilterText.ToLower();
 
             using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {
-                    var queryable = _dbContext.Roles.Select(s => new Role()
+                    var queryable = _dbContext.Roles.Where(x=> (String.IsNullOrEmpty(lowerFilterText) || (x.Name.ToLower().Contains(lowerFilterText)))).Select(s => new Role()
                     {
                         Id = s.Id,
                         Name = s.Name,

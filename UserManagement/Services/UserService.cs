@@ -37,12 +37,15 @@ namespace UserManagement.Services
         public async Task<Result<PagingResult<PagedList<User>>>> Paginate(PagingParameter pagingParameter)
         {
             var result = new Result<PagingResult<PagedList<User>>>();
+            string lowerFilterText = string.IsNullOrEmpty(pagingParameter.FilterText) ? null : pagingParameter.FilterText.ToLower();
 
             using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {
-                    var queryable = _dbContext.Users.Select(s => new User()
+                    var queryable = _dbContext.Users
+                        .Where(x => (String.IsNullOrEmpty(lowerFilterText) || (x.Name.ToLower().Contains(lowerFilterText)) || x.Surname.ToLower().Contains(lowerFilterText)))
+                        .Select(s => new User()
                     {
                         Id = s.Id,
                         Name = s.Name,

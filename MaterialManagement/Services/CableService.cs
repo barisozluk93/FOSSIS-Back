@@ -20,12 +20,13 @@ namespace MaterialManagement.Services
         public async Task<Result<PagingResult<PagedList<Cable>>>> Paginate(PagingParameter pagingParameter)
         {
             var result = new Result<PagingResult<PagedList<Cable>>>();
+            string lowerFilterText = string.IsNullOrEmpty(pagingParameter.FilterText) ? null : pagingParameter.FilterText.ToLower();
 
             using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {
-                    var queryable = _dbContext.Cables;
+                    var queryable = _dbContext.Cables.Where(x => (String.IsNullOrEmpty(lowerFilterText) || (x.Manufacturer.ToLower().Contains(lowerFilterText)))); ;
                     var pagination = PagedList<Cable>.ToPagedList(queryable, pagingParameter.PageNumber, pagingParameter.PageSize);
 
                     result.SetData(new PagingResult<PagedList<Cable>> ()

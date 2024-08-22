@@ -20,12 +20,13 @@ namespace MaterialManagement.Services
         public async Task<Result<PagingResult<PagedList<Battery>>>> Paginate(PagingParameter pagingParameter)
         {
             var result = new Result<PagingResult<PagedList<Battery>>>();
+            string lowerFilterText = string.IsNullOrEmpty(pagingParameter.FilterText) ? null : pagingParameter.FilterText.ToLower();
 
             using (var transaction = _dbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {
-                    var queryable = _dbContext.Batteries;
+                    var queryable = _dbContext.Batteries.Where(x=> (String.IsNullOrEmpty(lowerFilterText) || (x.Manufacturer.ToLower().Contains(lowerFilterText))));
                     var pagination = PagedList<Battery>.ToPagedList(queryable, pagingParameter.PageNumber, pagingParameter.PageSize);
 
                     result.SetData(new PagingResult<PagedList<Battery>> ()
