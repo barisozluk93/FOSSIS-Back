@@ -35,6 +35,22 @@ namespace ProjectManagement.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpGet("Pvcalc")]
+        [Authorize]
+        public async Task<IActionResult> GetPvCalc([FromQuery] PvcCalcMonthlyParam pvcCalcMonthlyParam)
+        {
+            var result = await _projectService.GetPvCalcMonthly(pvcCalcMonthlyParam);
+            return new OkObjectResult(result);
+        }
+
+        [HttpGet("Seriescalc")]
+        [Authorize]
+        public async Task<IActionResult> GetPvCalc([FromQuery] SeriesCalcDailyParam seriesCalcDailyParam)
+        {
+            var result = await _projectService.GetSeriesCalcDaily(seriesCalcDailyParam);
+            return new OkObjectResult(result);
+        }
+
         [HttpPost("Save")]
         [Authorize]
 
