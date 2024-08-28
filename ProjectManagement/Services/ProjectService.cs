@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Utilities;
 using ProjectManagement.DbContexts;
 using ProjectManagement.Entity;
 using ProjectManagement.Interfaces;
 using ProjectManagement.Model;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProjectManagement.Services
 {
@@ -64,6 +68,129 @@ namespace ProjectManagement.Services
                 }
             }
 
+            return result;
+        }
+
+        
+        public async Task<Result<List<PvCalcMonthly>>> GetPvCalcMonthly(PvcCalcMonthlyParam pvcCalcMonthlyParam)
+        {
+            var result = new Result<List<PvCalcMonthly>>();
+            List<PvCalcMonthly> pvCalcMonthlies = new List<PvCalcMonthly>();
+            var url = "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc";
+            var queryParams = BuildQueryParams(pvcCalcMonthlyParam);
+
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    var response = await httpClient.GetAsync(url + queryParams);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseData = await response.Content.ReadAsStringAsync();
+                        var jsonData = JObject.Parse(responseData);
+                        var monthlyData = jsonData["outputs"]["monthly"]["fixed"];
+                        foreach (var month in monthlyData)
+                        {
+                            PvCalcMonthly monthly = new PvCalcMonthly();
+                            monthly.MonthNo = month["month"].Value<int>();
+                            monthly.ProductionkWh = month["E_m"].Value<double>();
+                            monthly.Consumption = 0;
+                            monthly.SelfConsumption = 0;
+                            monthly.ClippedEnergy = 0;
+                            pvCalcMonthlies.Add(monthly);
+                        }
+                        result.SetData(pvCalcMonthlies);
+                        result.SetMessage("İşlem başarı ile gerçekleşti.");
+                    }
+                    else
+                    {
+                        result.SetIsSuccess(false);
+                        result.SetMessage($"Hata: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.SetIsSuccess(false);
+                    result.SetMessage(ex.Message);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<Result<List<SeriesCalcDaily>>> GetSeriesCalcDaily(SeriesCalcDailyParam seriesCalcDailyParam)
+        {
+            var result = new Result<List<SeriesCalcDaily>>();
+
+            List<SeriesCalcDaily> seriesCalcDaily = new List<SeriesCalcDaily>();
+
+            var url = "https://re.jrc.ec.europa.eu/api/v5_2/seriescalc";
+            var queryParams = BuildQueryParams(seriesCalcDailyParam);
+            var requestUrl = url + queryParams;
+
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    var response = await httpClient.GetAsync(requestUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseData = await response.Content.ReadAsStringAsync();
+                        var jsonData = JObject.Parse(responseData);
+                        var hourlyData = jsonData["outputs"]?["hourly"];
+
+                        if (hourlyData != null && hourlyData.Type == JTokenType.Array)
+                        {
+                            var firstDayOfMonth = new DateTime(2020, seriesCalcDailyParam.MountNumber, 1).ToString("yyyyMMdd");
+
+                            foreach (var hour in hourlyData)
+                            {
+                                var dateTimeString = (string)hour["time"];
+                                if (DateTime.TryParseExact(dateTimeString, "yyyyMMdd:HHmm", null, System.Globalization.DateTimeStyles.None, out var date))
+                                {
+                                    if (date.ToString("yyyyMMdd") == firstDayOfMonth)
+                                    {
+                                        var energy = (double)hour["P"];
+                                        seriesCalcDaily.Add(new SeriesCalcDaily
+                                        {
+                                            Hour = date.Hour,
+                                            PVSystemPowerW = energy,
+                                            ClippedEnergy = 0,
+                                            Consumption = 0,
+                                            SystemCapacity = 0
+                                        });
+                                    }
+                                }
+                            }
+
+                            result.SetData(seriesCalcDaily);
+                            result.SetMessage("İşlem başarı ile gerçekleşti.");
+
+                            if (!seriesCalcDaily.Any())
+                            {
+                                result.SetIsSuccess(false);
+                                result.SetMessage($"Temmuz ayının ilk gününe ait P verisi bulunamadı.");
+                            }
+                        }
+                        else
+                        {
+                            result.SetIsSuccess(false);
+                            result.SetMessage($"Saatlik veri bulunamadı veya hatalı formatta.");
+                        }
+                    }
+                    else
+                    {
+                        result.SetIsSuccess(false);
+                        result.SetMessage($"Hata: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.SetIsSuccess(false);
+                    result.SetMessage($"Hata: {ex.Message}");
+                }
+            }
             return result;
         }
 
@@ -220,6 +347,57 @@ namespace ProjectManagement.Services
 
             return result;
         }
+
+
+        private string BuildQueryParams(PvcCalcMonthlyParam param)
+        {
+            var queryParams = new List<string>();
+
+            if (param.Lat.HasValue)
+                queryParams.Add($"lat={param.Lat.Value}");
+            if (param.Lon.HasValue)
+                queryParams.Add($"lon={param.Lon.Value}");
+            if (param.Peakpower.HasValue)
+                queryParams.Add($"peakpower={param.Peakpower.Value}");
+            if (param.Loss.HasValue)
+                queryParams.Add($"loss={param.Loss.Value}");
+            if (!string.IsNullOrEmpty(param.Outputformat))
+                queryParams.Add($"outputformat={param.Outputformat}");
+            if (param.Usehorizon.HasValue)
+                queryParams.Add($"usehorizon={param.Usehorizon.Value}");
+
+            return "?" + string.Join("&", queryParams);
+        }
+
+        private string BuildQueryParams(SeriesCalcDailyParam param)
+        {
+            var queryParams = new List<string>();
+
+            if (param.Lat.HasValue)
+                queryParams.Add($"lat={param.Lat.Value}");
+            if (param.Lon.HasValue)
+                queryParams.Add($"lon={param.Lon.Value}");
+            if (param.StartYear.HasValue)
+                queryParams.Add($"startyear={param.StartYear.Value}");
+            if (param.EndYear.HasValue)
+                queryParams.Add($"endyear={param.EndYear.Value}");
+            if (param.PvCalculation.HasValue)
+                queryParams.Add($"pvcalculation={param.PvCalculation.Value}");
+            if (param.PeakPower.HasValue)
+                queryParams.Add($"peakpower={param.PeakPower.Value}");
+            if (param.Loss.HasValue)
+                queryParams.Add($"loss={param.Loss.Value}");
+            if (!string.IsNullOrEmpty(param.OutputFormat))
+                queryParams.Add($"outputformat={param.OutputFormat}");
+            if (param.UseHorizon.HasValue)
+                queryParams.Add($"usehorizon={param.UseHorizon.Value}");
+            
+            return "?" + string.Join("&", queryParams);
+        }
+
+        
+
+
     }
 }
 
