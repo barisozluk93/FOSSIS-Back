@@ -33,6 +33,7 @@ namespace MaterialManagement.Services
                     {
                         Items = pagination,
                         TotalCount = pagination.TotalCount,
+                        TotalPages = pagination.TotalPages
                     });
 
                     result.SetMessage("İşlem başarı ile gerçekleşti.");
