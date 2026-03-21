@@ -19,8 +19,15 @@ namespace ProjectManagement.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     BuildingId = table.Column<long>(type: "bigint", nullable: true),
+                    Location = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    RoofWkt = table.Column<string>(type: "text", nullable: true),
+                    RoofArea = table.Column<double>(type: "double precision", nullable: true),
+                    PanelId = table.Column<long>(type: "bigint", nullable: true),
+                    GridSpace = table.Column<long>(type: "bigint", nullable: true),
+                    Margin = table.Column<long>(type: "bigint", nullable: true),
+                    SystemPower = table.Column<double>(type: "double precision", nullable: true)
                 },
                 constraints: table =>
                 {

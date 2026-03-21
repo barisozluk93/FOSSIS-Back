@@ -12,8 +12,8 @@ using ProjectManagement.DbContexts;
 namespace ProjectManagement.Migrations
 {
     [DbContext(typeof(ProjectManagementContext))]
-    [Migration("20240819111538_ProjectEdit93028")]
-    partial class ProjectEdit93028
+    [Migration("20260310113200_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,21 +36,33 @@ namespace ProjectManagement.Migrations
                     b.Property<long?>("BuildingId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("GridSpace")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Location")
                         .HasColumnType("text");
 
+                    b.Property<long?>("Margin")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<long?>("PanelId")
+                        .HasColumnType("bigint");
 
                     b.Property<double?>("RoofArea")
                         .HasColumnType("double precision");
 
                     b.Property<string>("RoofWkt")
                         .HasColumnType("text");
+
+                    b.Property<double?>("SystemPower")
+                        .HasColumnType("double precision");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");

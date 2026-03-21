@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MapManagementService.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api2/[controller]")]
     [ApiController]
     public class MapController : ControllerBase
     {

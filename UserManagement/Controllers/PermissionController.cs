@@ -8,7 +8,7 @@ using UserManagement.Model;
 
 namespace UserManagement.Controllers
 {
-    [Route("/api/[controller]")]
+    [Route("/api2/[controller]")]
     [ApiController]
     public class PermissionController : ControllerBase
     {

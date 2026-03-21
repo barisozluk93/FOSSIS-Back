@@ -5,7 +5,7 @@ namespace ProjectManagement.Interfaces
 {
     public interface IProjectService
     {
-        Task<Result<PagingResult<PagedList<Project>>>> Paginate(PagingParameter pagingParameter, long userId);
+        Task<Result<PagingResult<PagedList<Project>>>> Paginate(PagingParameter pagingParameter, long userId, bool isAdmin, string token);
         Task<Result<List<Project>>> GetProjects();
         Task<Result<List<PvCalcMonthly>>> GetPvCalcMonthly(PvcCalcMonthlyParam pvcCalcMonthlyParam);
         Task<Result<List<SeriesCalcDaily>>> GetSeriesCalcDaily(SeriesCalcDailyParam seriesCalcDailyParam);

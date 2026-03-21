@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FileManagement.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api2/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
     {

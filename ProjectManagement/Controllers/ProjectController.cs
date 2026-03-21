@@ -7,7 +7,7 @@ using ProjectManagement.Model;
 
 namespace ProjectManagement.Controllers
 {
-    [Route("/api/[controller]")]
+    [Route("/api2/[controller]")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -18,11 +18,13 @@ namespace ProjectManagement.Controllers
             _projectService = projectService;
         }
 
-        [HttpGet("Paginate/{userId}")]
+        [HttpGet("Paginate/{userId}/{isAdmin}")]
         [Authorize]
-        public async Task<IActionResult> Paginate([FromQuery] PagingParameter pagingParameter, long userId)
+        public async Task<IActionResult> Paginate([FromQuery] PagingParameter pagingParameter, long userId, bool isAdmin)
         {
-            var result = await _projectService.Paginate(pagingParameter, userId);
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(' ').Last();
+
+            var result = await _projectService.Paginate(pagingParameter, userId, isAdmin, token);
             return new OkObjectResult(result);
         }
 

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace NotificationManagement.Controllers
 {
-    [Route("/api/[controller]")]
+    [Route("/api2/[controller]")]
     [ApiController]
     public class NotificationController : ControllerBase
     {

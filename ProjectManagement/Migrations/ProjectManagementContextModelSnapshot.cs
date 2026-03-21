@@ -58,6 +58,9 @@ namespace ProjectManagement.Migrations
                     b.Property<string>("RoofWkt")
                         .HasColumnType("text");
 
+                    b.Property<double?>("SystemPower")
+                        .HasColumnType("double precision");
+
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
 

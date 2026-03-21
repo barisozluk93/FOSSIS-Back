@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using ProjectManagement.Model;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectManagement.Entity
 {
@@ -15,6 +16,11 @@ namespace ProjectManagement.Entity
         public long? PanelId { get; set; }
         public long? GridSpace { get; set; }
         public long? Margin { get; set; }
+        public double? SystemPower { get; set; }
+
+
+        [NotMapped]
+        public Panel? Panel { get; set; }
 
     }
 }

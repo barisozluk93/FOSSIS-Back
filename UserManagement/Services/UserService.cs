@@ -467,7 +467,7 @@ namespace UserManagement.Services
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync(configuration["AppSettings:ApiUrl"] + "/api/File/" + id);
+            var response = await client.GetAsync(configuration["AppSettings:ApiUrl"] + "/api2/File/" + id);
 
             if (response.IsSuccessStatusCode)
             {

@@ -65,6 +65,8 @@ builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHand
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 builder.Services.AddHttpContextAccessor();
 
+builder.Host.UseWindowsService();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,6 +74,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    var scope = app.Services.GetService<IServiceScopeFactory>().CreateScope();
+    scope.ServiceProvider.GetRequiredService<UserManagementContext>().Database.Migrate();
 }
 
 app.UseHttpsRedirection();

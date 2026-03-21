@@ -1,36 +1,74 @@
+//using Ocelot.DependencyInjection;
+//using Ocelot.Middleware;
+
+//var builder = WebApplication.CreateBuilder(args);
+
+//builder.Configuration.AddJsonFile("ocelot.json", false, true);
+
+//// Add services to the container.
+
+//builder.Services.AddControllers();
+//// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
+//builder.Services.AddOcelot();
+
+//builder.Host.UseWindowsService();
+
+//var app = builder.Build();
+
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+//app.UseCors(
+//         options => options.WithOrigins("http://localhost:4200", "https://styever.com").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+
+
+//app.UseOcelot().Wait();
+
+//app.UseAuthorization();
+
+//app.MapControllers();
+
+//app.Run();
+
+using Microsoft.AspNetCore.HttpOverrides;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("ocelot.json", false, true);
+builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddOcelot();
+builder.Services.AddCors();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseForwardedHeaders();
 
-app.UseCors(
-         options => options.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+app.UsePathBase("/api2");
 
-//app.UseHttpsRedirection();
+app.UseCors(options =>
+    options.WithOrigins("http://localhost:4200", "https://styever.com", "http://178.251.42.243")
+           .AllowAnyHeader()
+           .AllowAnyMethod()
+           .AllowCredentials()
+);
 
-app.UseOcelot().Wait();
-
-app.UseAuthorization();
-
-app.MapControllers();
+await app.UseOcelot();
 
 app.Run();
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Utilities;
@@ -7,6 +8,7 @@ using ProjectManagement.Entity;
 using ProjectManagement.Interfaces;
 using ProjectManagement.Model;
 using System.Data;
+using System.Net.Http.Headers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProjectManagement.Services
@@ -14,12 +16,16 @@ namespace ProjectManagement.Services
     public class ProjectService : IProjectService
     {
         private readonly ProjectManagementContext _dbContext;
-        public ProjectService(ProjectManagementContext dbContext)
+        private readonly IConfiguration configuration;
+
+
+        public ProjectService(ProjectManagementContext dbContext, IConfiguration _configuration)
         {
             _dbContext = dbContext;
+            configuration = _configuration;
         }
 
-        public async Task<Result<PagingResult<PagedList<Project>>>> Paginate(PagingParameter pagingParameter, long userId)
+        public async Task<Result<PagingResult<PagedList<Project>>>> Paginate(PagingParameter pagingParameter, long userId, bool isAdmin, string token)
         {
             var result = new Result<PagingResult<PagedList<Project>>>();
 
@@ -27,13 +33,25 @@ namespace ProjectManagement.Services
             {
                 try
                 {
-                    var queryable = _dbContext.Projects.Where(x => x.UserId == userId);
+                    IOrderedQueryable<Project> queryable;
+
+                    if (isAdmin)
+                    {
+                        queryable = _dbContext.Projects.OrderBy(o => o.Id);
+                    }
+                    else
+                    {
+                        queryable = _dbContext.Projects.Where(x => x.UserId == userId && !x.IsDeleted).OrderBy(o => o.Id);
+                    }
+                    
                     var pagination = PagedList<Project>.ToPagedList(queryable, pagingParameter.PageNumber, pagingParameter.PageSize);
 
+                    pagination.ForEach(p => p.Panel = (p.PanelId.HasValue ? GetPanel(p.PanelId.Value, token).Result : null));
                     result.SetData(new PagingResult<PagedList<Project>>()
                     {
                         Items = pagination,
                         TotalCount = pagination.TotalCount,
+                        TotalPages = pagination.TotalPages
                     });
 
                     result.SetMessage("İşlem başarı ile gerçekleşti.");
@@ -251,6 +269,7 @@ namespace ProjectManagement.Services
                             oldProject.GridSpace = project.GridSpace;
                             oldProject.Margin = project.Margin;
                             oldProject.PanelId = project.PanelId;
+                            oldProject.SystemPower = project.SystemPower;
 
                             await _dbContext.SaveChangesAsync();
                             transaction.Commit();
@@ -395,8 +414,52 @@ namespace ProjectManagement.Services
             return "?" + string.Join("&", queryParams);
         }
 
-        
 
+        private async Task<Panel> GetPanel(long? id, string token)
+        {
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.GetAsync(configuration["AppSettings:ApiUrl"] + "/api2/Panel/" + id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseStr = await response.Content.ReadAsStringAsync();
+
+                if (!string.IsNullOrEmpty(responseStr))
+                {
+                    try
+                    {
+                        Result<Panel> result = JsonConvert.DeserializeObject<Result<Panel>>(responseStr);
+
+                        if (result != null)
+                        {
+                           
+                            return result.GetData();
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return null;
+                    }
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+            return null;
+        }
 
     }
 }

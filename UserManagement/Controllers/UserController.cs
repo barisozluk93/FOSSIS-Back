@@ -14,7 +14,7 @@ using UserManagement.Services;
 
 namespace UserManagement.Controllers
 {
-    [Route("/api/[controller]")]
+    [Route("/api2/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
